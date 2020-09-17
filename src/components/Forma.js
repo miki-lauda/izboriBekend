@@ -11,13 +11,21 @@ import {
     Card,
     DatePicker,
     Select,
-    message
+    message,
+    Modal,
 } from 'antd';
 import '../CSS/Forma.css'
+
+import moment from 'moment';
 
 const { Option } = Select;
 
 const dateFormat = 'DD/MM/YYYY';
+
+function disabledDate(current) {
+    // Can not select days before today and today
+    return current > moment("15/11/2002","DD/MM/YYYY");
+  }
 
 export default function Forma(props) {
 
@@ -41,14 +49,35 @@ export default function Forma(props) {
         else {
             values.iznosPlacanja = parseInt(values.iznosPlacanja)
         }
-        axios.post("https://infinite-wildwood-69664.herokuapp.com/api/glasac/dodajGlasaca/",values)
-        .then(res=>{
-            console.log(values)
-            fun([...glasaci, values])
-            message.success('Glasač je uspješno dodat!')
-            form.resetFields()
-        })
-        .catch(err=>console.log(err));
+        for (let glasac of glasaci) {
+            if (
+                glasac.ime.toLowerCase() === values.ime.toLowerCase() &&
+                glasac.prezime.toLowerCase() === values.prezime.toLowerCase() &&
+                glasac.imeOca.toLowerCase() === values.imeOca.toLowerCase() &&
+                glasac.datumRodjenja.toLowerCase() === values.datumRodjenja.toLowerCase()
+            ) {
+                Modal.error({
+                    title: 'Glasac je već dodat!',
+                    content:
+                        <div>
+                            <h3>Podaci o glasaču:</h3>
+                            <p><b>Ime: </b>{glasac.ime}</p>
+                            <p><b>Prezime: </b>{glasac.prezime}</p>
+                            <p><b>Ime oca: </b>{glasac.imeOca}</p>
+                            <p><b>Datum rođenja: </b>{glasac.datumRodjenja}</p>
+                            <p><b>Plaćeno: </b>{glasac.iznosPlacanja}KM</p>
+                            <p><b>Izborna jedinica: </b>{glasac.izbornaJedinica}</p>
+                            <p><b>Glas dobavio: </b>{glasac.glasDobavio}</p>
+                        </div>,
+                });
+                form.resetFields();
+                return false;
+            }
+        }
+        values.id = glasaci.length
+        fun([...glasaci, values])
+        message.success('Glasač je uspješno dodat!')
+        form.resetFields()
     };
 
 
@@ -56,7 +85,7 @@ export default function Forma(props) {
 
         <Row style={{ background: "#d9d9d9", borderRadius: "10px", width: "650px", padding: "15px" }} justify="center" >
             <Col>
-                <Card title="Unos podataka za glasača" style={{borderRadius:"10px"}}  bordered={true}>
+                <Card title="Unos podataka za glasača" style={{ borderRadius: "10px" }} bordered={true}>
                     <Form
                         form={form}
                         name="basic"
@@ -80,7 +109,7 @@ export default function Forma(props) {
                                     <Input style={{ width: "250px" }} placeholder='Ime oca' />
                                 </Form.Item>
                                 <Form.Item label={<b>Datum rođenja</b>} name="datumRodjenja" rules={[{ required: true, message: 'Molimo Vas unesite datum rođenja glasača!' }]}>
-                                    <DatePicker style={{ width: "180px" }} placeholder="DD/MM/YYYY" format={dateFormat} />
+                                    <DatePicker disabledDate={disabledDate} style={{ width: "180px" }} placeholder="DD/MM/YYYY" format={dateFormat} />
                                 </Form.Item>
                                 <Form.Item label={<b>Iznos plaćanja</b>} name="iznosPlacanja">
                                     <Input type="number" suffix="KM" style={{ width: "100px" }} />
