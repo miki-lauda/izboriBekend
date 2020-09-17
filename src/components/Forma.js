@@ -41,7 +41,7 @@ export default function Forma(props) {
         else {
             values.iznosPlacanja = parseInt(values.iznosPlacanja)
         }
-        axios.put("https://infinite-wildwood-69664.herokuapp.com/api/glasac/dodajGlasaca/",values)
+        axios.post("https://infinite-wildwood-69664.herokuapp.com/api/glasac/dodajGlasaca/",values)
         .then(res=>{
             console.log(values)
             fun([...glasaci, values])
