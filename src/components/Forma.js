@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
     Form,
     Input,
@@ -11,6 +12,7 @@ import {
     message,
     Modal,
 } from 'antd';
+import axios from 'axios'
 import '../CSS/Forma.css'
 
 import moment from 'moment';
@@ -21,8 +23,8 @@ const dateFormat = 'DD/MM/YYYY';
 
 function disabledDate(current) {
     // Can not select days before today and today
-    return current > moment("15/11/2002","DD/MM/YYYY");
-  }
+    return current > moment("15/11/2002", "DD/MM/YYYY");
+}
 
 export default function Forma(props) {
 
@@ -34,10 +36,15 @@ export default function Forma(props) {
         wrapperCol: { offset: 0, span: 0 },
     };
 
-    const { glasaci, fun } = props
+    const { fun } = props
 
     const [form] = Form.useForm();
 
+    React.useEffect(()=>{
+        axios.get("http://lauda98-001-site1.ftempurl.com/api/Glasac")
+        .then(res=>{console.log(res.data);fun(JSON.parse(res.data))})
+        .catch(err=>console.log(err));
+    },[])
     const onFinish = (values) => {
         values.datumRodjenja = values.datumRodjenja.format(dateFormat)
         if (values.iznosPlacanja === undefined) {
@@ -46,7 +53,7 @@ export default function Forma(props) {
         else {
             values.iznosPlacanja = parseInt(values.iznosPlacanja)
         }
-        for (let glasac of glasaci) {
+        /*for (let glasac of glasaci) {
             if (
                 glasac.ime.toLowerCase() === values.ime.toLowerCase() &&
                 glasac.prezime.toLowerCase() === values.prezime.toLowerCase() &&
@@ -74,7 +81,38 @@ export default function Forma(props) {
         values.id = glasaci.length
         fun([...glasaci, values])
         message.success('Glasač je uspješno dodat!')
-        form.resetFields()
+        form.resetFields()*/
+        axios.post("http://lauda98-001-site1.ftempurl.com/api/Glasac", values)
+            .then(res => {
+                console.log(res.data)
+                if (JSON.parse(res.data)) {
+                    message.success('Glasač je uspješno dodat!')
+                    form.resetFields()
+                    axios.get("http://lauda98-001-site1.ftempurl.com/api/Glasac")
+                    .then(res=>{console.log(res.data);fun(JSON.parse(res.data))})
+                    .catch(err=>console.log(err));
+                }
+                else {
+                    Modal.error({
+                        title: 'Glasac je već dodat!',
+                        content:
+                            <div>
+                                <h3>Podaci o glasaču:</h3>
+                                <p><b>Ime: </b>{values.ime}</p>
+                                <p><b>Prezime: </b>{values.prezime}</p>
+                                <p><b>Ime oca: </b>{values.imeOca}</p>
+                                <p><b>Datum rođenja: </b>{values.datumRodjenja}</p>
+                                <p><b>Plaćeno: </b>{values.iznosPlacanja}KM</p>
+                                <p><b>Izborna jedinica: </b>{values.izbornaJedinica}</p>
+                                <p><b>Glas dobavio: </b>{values.glasDobavio}</p>
+                            </div>,
+                    });
+                    form.resetFields();
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
     };
 
 

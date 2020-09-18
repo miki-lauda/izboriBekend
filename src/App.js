@@ -17,7 +17,7 @@ function App() {
       </div>
       <Divider />
       <div align='middle' justify='center'>
-        <Forma glasaci={glasaci} fun={setGlasaci}></Forma>
+        <Forma fun={setGlasaci}></Forma>
       </div>
       <Divider />
       <div align='middle' justify='center'>
