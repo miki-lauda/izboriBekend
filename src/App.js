@@ -3,11 +3,18 @@ import './App.css';
 import Forma from './components/Forma';
 import { Divider, Typography, Avatar } from 'antd';
 import GlasaciTabela from './components/GlasaciTabela';
+import axios from 'axios';
 const { Title } = Typography;
 
 function App() {
 
   const [glasaci, setGlasaci] = React.useState([])
+
+  React.useEffect(()=>{
+    axios.get("http://lauda98-001-site1.ftempurl.com/api/Glasac")
+    .then(res=>{console.log(res.data);setGlasaci(JSON.parse(res.data))})
+    .catch(err=>console.log(err));
+},[])
 
   return (
     <div className="App">

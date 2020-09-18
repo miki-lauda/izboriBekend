@@ -40,11 +40,6 @@ export default function Forma(props) {
 
     const [form] = Form.useForm();
 
-    React.useEffect(()=>{
-        axios.get("http://lauda98-001-site1.ftempurl.com/api/Glasac")
-        .then(res=>{console.log(res.data);fun(JSON.parse(res.data))})
-        .catch(err=>console.log(err));
-    },[])
     const onFinish = (values) => {
         values.datumRodjenja = values.datumRodjenja.format(dateFormat)
         if (values.iznosPlacanja === undefined) {
