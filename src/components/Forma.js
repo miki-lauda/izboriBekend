@@ -77,13 +77,13 @@ export default function Forma(props) {
         fun([...glasaci, values])
         message.success('Glasač je uspješno dodat!')
         form.resetFields()*/
-        axios.post("http://lauda98-001-site1.ftempurl.com/api/Glasac", values)
+        axios.post("http://lauda98-001-site2.ftempurl.com/api/Glasac", values)
             .then(res => {
                 console.log(res.data)
                 if (JSON.parse(res.data)) {
                     message.success('Glasač je uspješno dodat!')
                     form.resetFields()
-                    axios.get("http://lauda98-001-site1.ftempurl.com/api/Glasac")
+                    axios.get("http://lauda98-002-site1.ftempurl.com/api/Glasac")
                     .then(res=>{console.log(res.data);fun(JSON.parse(res.data))})
                     .catch(err=>console.log(err));
                 }
