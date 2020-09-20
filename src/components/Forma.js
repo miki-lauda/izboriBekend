@@ -77,7 +77,7 @@ export default function Forma(props) {
         fun([...glasaci, values])
         message.success('Glasač je uspješno dodat!')
         form.resetFields()*/
-        axios.post("http://lauda98-001-site2.ftempurl.com/api/Glasac", values)
+        axios.post("http://lauda98-002-site1.ftempurl.com/api/Glasac", values)
             .then(res => {
                 console.log(res.data)
                 if (JSON.parse(res.data)) {
