@@ -11,7 +11,7 @@ function App() {
   const [glasaci, setGlasaci] = React.useState([])
 
   React.useEffect(()=>{
-    axios.get("http://lauda98-001-site1.ftempurl.com/api/Glasac")
+    axios.get("http://lauda98-002-site1.ftempurl.com/api/Glasac")
     .then(res=>{console.log(res.data);setGlasaci(JSON.parse(res.data))})
     .catch(err=>console.log(err));
 },[])
